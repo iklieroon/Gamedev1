@@ -1,0 +1,38 @@
+WIDTH=500
+HEIGHT=500
+pacman=Actor('pac man')
+dot=Actor('red dot')
+score=0
+pacman.pos=100,100
+dot.pos=200,200
+gameover=False
+def draw():
+    screen.blit('bg of bumblbee game',(0,0))
+    pacman.draw()
+    dot.draw()
+    screen.draw.text('score:'+str(score),color='red',topleft=(10,10))
+    if gameover:
+        screen.fill('red')
+        screen.draw.text('Your final score was:'+str(score),color='black',midtop=(250,250))
+def dotmoving():
+    dot.x=(randint(50,450))
+    dot.y=(randint(50,450))
+def update():
+    global score
+    if keyboard.left:
+        pacman.x-=5
+    if keyboard.right:
+        pacman.x+=5
+    if keyboard.up:
+        pacman.y-=5
+    if keyboard.down:
+        pacman.y+=5
+    dothit=pacman.colliderect(dot)
+    if dothit:
+        dotmoving()
+        score+=1
+def timer():
+    global gameover
+    gameover=True
+clock.schedule(timer,20.0)
+pgzrun.go()
