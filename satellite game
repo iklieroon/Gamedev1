@@ -1,0 +1,53 @@
+import pgzrun,random
+from time import time
+WIDTH=500
+HEIGHT=500
+satellites=[]
+lines=[]
+numsatellites=10
+starttime=0
+totaltime=0
+currentsatellite=0
+
+def createsatellites():
+    global starttime
+    for i in range(10):
+        satellite=Actor('satellite')
+        satellite.pos=random.randint(50,450),random.randint(50,450)
+        satellites.append(satellite)
+    starttime=time()
+
+def draw():
+    global totaltime
+    screen.blit('bg of satellite game',(0,0))
+    num=1
+    for i in satellites:
+        i.draw()
+        screen.draw.text(str(num),(i.pos[0],i.pos[1]+20))
+        num=num+1
+    for line in lines:
+        screen.draw.line(line[0],line[1],'white')
+    if currentsatellite<numsatellites:
+        totaltime=time()-starttime
+        screen.draw.text(str(round(totaltime,1)),(10,10),fontsize=30)
+    else:
+        screen.draw.text(str(round(totaltime,1)),(10,10),fontsize=30)
+
+def update():
+    pass
+
+def on_mouse_down(pos):
+    global lines,currentsatellite
+    if currentsatellite<numsatellites:
+        if satellites[currentsatellite].collidepoint(pos):
+            if currentsatellite:
+                startpos=satellites[currentsatellite-1].pos
+                endpos=satellites[currentsatellite].pos
+                lines.append((startpos,endpos))
+            currentsatellite+=1
+        else:
+            lines=[]
+            currentsatellite=0
+
+createsatellites()
+pgzrun.go()
