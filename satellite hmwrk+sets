@@ -1,0 +1,90 @@
+#hmwrk
+import pgzrun,random
+from time import time
+WIDTH=500
+HEIGHT=500
+satellites=[]
+lines=[]
+numsatellites=10
+currentsatellite=0
+gameover=False
+
+def createsatellites():
+    for i in range(10):
+        satellite=Actor('satellite')
+        satellite.pos=random.randint(50,450),random.randint(50,450)
+        satellites.append(satellite)
+
+def draw():
+    screen.blit('bg of satellite game',(0,0))
+    num=1
+    for i in satellites:
+        i.draw()
+        screen.draw.text(str(num),(i.pos[0],i.pos[1]+20))
+        num=num+1
+    for line in lines:
+        screen.draw.line(line[0],line[1],'white')
+    if gameover:
+        screen.fill('red')
+        screen.draw.text('You Lose :(',color='black',midtop=(250,250))
+    if currentsatellite==10:
+        screen.fill('red')
+        screen.draw.text('You Win :)',color='black',midtop=(250,250))
+
+def update():
+    pass
+
+def on_mouse_down(pos):
+    global lines,currentsatellite
+    if currentsatellite<numsatellites:
+        if satellites[currentsatellite].collidepoint(pos):
+            if currentsatellite:
+                startpos=satellites[currentsatellite-1].pos
+                endpos=satellites[currentsatellite].pos
+                lines.append((startpos,endpos))
+            currentsatellite+=1
+        else:
+            lines=[]
+            currentsatellite=0
+        
+def timer():
+    global gameover
+    gameover=True
+clock.schedule(timer,15.0)
+
+createsatellites()
+pgzrun.go()
+
+
+
+'''x=set([1,2,3,4,5,1,2,3,4])
+print(x)
+a='python'
+b=set(a)
+print(b)
+#print(b[2])
+if 'p' in b:
+    print('p')
+else:
+    print('does not exist')
+b.add('x')
+print(b)
+b.remove('x')
+print(b)
+b.discard('a')
+print(b)'''
+a=set([1,2,3,4,5])
+b=set([4,5,6,7,8])
+#union of sets
+print(a.union(b))
+print(a|b)
+#intersection of sets
+print(a.intersection(b))
+print(a&b)
+#difference of sets
+print(a.difference(b))
+print(a-b)
+print(b-a)
+#symmetric difference of sets
+print(a.symmetric_difference(b))
+print(a^b)
