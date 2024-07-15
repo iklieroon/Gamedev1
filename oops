@@ -1,0 +1,46 @@
+def greet():
+    print('Hello! I`m a bot. What`s your name?')
+    user=input()
+    print('Hello',user)
+#greet()
+#creating a student class
+class student:
+    def __init__(self,name):
+        self.name=name
+        self.age=12
+        self.grade='Y7'
+        self.house='York'
+        self.teacher='Mr Brown'
+    def show_details(self):
+        print('The details of this student is:')
+        print('name',self.name)
+        print('age',self.age)
+        print('grade',self.grade)
+        print('house',self.house)
+        print('teacher',self.teacher)
+s1=student('Jeff')
+s1.show_details()
+print(s1.house)
+#inheritance
+#creating the parent class
+class person:
+    def __init__(self,name,idnum):
+        self.name=name
+        self.idnum=idnum
+    def display(self):
+        print(self.name)
+        print(self.idnum)
+#creaitng the child class
+class employee(person):
+    def __init__(self,name,idnum,salary,position):
+        person.__init__(self,name,idnum)
+        self.salary=salary
+        self.position=position
+    def details(self):
+        print('My name is:',self.name)
+        print('My ID number is',self.idnum)
+        print('My salary is:',self.salary)
+        print('my position is:',self.position)
+e1=employee('Bob',462,'£100000 per year','CEO')
+e1.display()
+e1.details()
