@@ -1,0 +1,33 @@
+import pgzrun
+TITLE='Ball'
+HEIGHT=900
+WIDTH=900
+gravity=2000
+class ball:
+    def __init__(self,x,y):
+        self.x=x
+        self.y=y
+        self.vx=100
+        self.vy=0
+        self.rad=20
+    def draw(self):
+        screen.draw.filled_circle((self.x,self.y),self.rad,'red')
+obj=ball(200,200)
+def draw():
+    screen.clear()
+    obj.draw()
+def update(t):
+    uy=obj.vy
+    obj.vy+=gravity*t
+    obj.y+=(uy+obj.vy)*t*0.5
+    #detect and handle the bounce
+    if obj.y>=900:
+        obj.y=900
+        obj.vy=-obj.vy*0.9
+    obj.x+=obj.vx*t
+    if obj.x>=900 or obj.x<=0:
+        obj.vx=-obj.vx
+def on_key_down(key):
+    if key==keys.SPACE:
+        obj.vy=-500
+pgzrun.go()
