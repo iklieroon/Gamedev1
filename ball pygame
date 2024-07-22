@@ -1,0 +1,28 @@
+import pygame
+#initialising pygame
+pygame.init()
+#creating the screen object
+screen=pygame.display.set_mode((1000,600))
+pygame.display.set_caption('Ball')
+#creating the ball object
+ball=pygame.draw.circle(surface=screen,color='red',center=[100,100],radius=20)
+#defining the speed of the ball
+#speed=[xdir,ydir]
+speed=[1,1]
+#gameloop
+while True:
+    for event in pygame.event.get():
+        #check if the user wants to exit the game
+        if event.type==pygame.QUIT:
+            exit()
+    screen.fill('black')
+    #moving the ball
+    ball=ball.move(speed)
+    if ball.bottom>=600 or ball.top<=0:
+        speed[1]=-speed[1]
+    if ball.right>=1000 or ball.left<=0:
+        speed[0]=-speed[0]
+    pygame.draw.circle(surface=screen,color='red',center=ball.center,radius=20)
+    pygame.display.update()
+
+    
