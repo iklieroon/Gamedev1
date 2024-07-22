@@ -1,0 +1,14 @@
+#hmwrk
+class car:
+    def __init__(self,model,color,horsepower,topspeed):
+        self.model=model
+        self.color=color
+        self.horsepower=horsepower
+        self.topspeed=topspeed
+    def display(self):
+        print('Model:',self.model)
+        print('Color:',self.color)
+        print('Horsepower:',self.horsepower)
+        print('Top speed:',self.topspeed)
+c1=car('Lamborghini Aventador','Green','769 horsepower','218.1 mph')
+c1.display()
