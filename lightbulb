@@ -1,0 +1,16 @@
+import pygame
+pygame.init()
+screen=pygame.display.set_mode((200,200))
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            exit()
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_o:
+                on=pygame.image.load('lightbulbon.jpg')
+                screen.blit(on,(0,0))
+                pygame.display.update()
+            if event.key==pygame.K_f:
+                off=pygame.image.load('lightbulboff.jpg')
+                screen.blit(off,(0,0))
+                pygame.display.update()
