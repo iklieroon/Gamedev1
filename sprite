@@ -1,0 +1,40 @@
+import pygame,random
+pygame.init()
+screen=pygame.display.set_mode((500,500))
+score=0
+clock=pygame.time.Clock()
+class rectangle(pygame.sprite.Sprite):
+    def __init__(self,color,width,height):
+        super().__init__()
+        self.image=pygame.Surface([width,height])
+        self.image.fill(color)
+        self.rect=self.image.get_rect()
+blocklist=pygame.sprite.Group()
+allsprites=pygame.sprite.Group()
+for i in range(50):
+    blackblock=rectangle('black',25,20)
+    blackblock.rect.x=random.randint(0,500)
+    blackblock.rect.y=random.randrange(500)
+    blocklist.add(blackblock)
+    allsprites.add(blackblock)
+
+#creating the red block
+redblock=rectangle('red',25,20)
+allsprites.add(redblock)
+
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            exit()
+    screen.fill('white')
+    pos=pygame.mouse.get_pos()
+    redblock.rect.x=pos[0]
+    redblock.rect.y=pos[1]
+    #checking for colission
+    blockhit=pygame.sprite.spritecollide(redblock,blocklist,True)
+    for i in blockhit:
+        score+=1
+        print(score)
+    allsprites.draw(screen)
+    pygame.display.update()
+    clock.tick(60)
