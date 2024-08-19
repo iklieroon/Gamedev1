@@ -1,0 +1,29 @@
+import pygame
+pygame.init()
+screen=pygame.display.set_mode((1000,800))
+pygame.display.set_caption('space battle royale')
+border=pygame.Rect(485,0,30,800)
+background=pygame.transform.scale(pygame.image.load('space.png'),(1000,800))
+playerspeed=1
+bulletspeed=2
+shipwidth=50
+shipheight=50
+yellowhealth=20
+redhealth=20
+wintext=''
+gameover=False
+font=pygame.font.SysFont('bahnschrift',75)
+yellowbullet=[]
+redbullet=[]
+p1=pygame.transform.rotate(pygame.transform.scale(pygame.image.load('yellowspaceship'),(shipwidth,shipheight)),90)
+p2=pygame.transform.rotate(pygame.transform.scale(pygame.image.load('redspaceship'),(shipwidth,shipheight)),270)
+def draw():
+    screen.blit(background,(0,0))
+    pygame.draw.rect(screen,'black',border)
+    p1hptext=font.render(f'Health:{yellowhealth}',True,'white')
+    pygame.display.update()
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            exit()
+    draw()
