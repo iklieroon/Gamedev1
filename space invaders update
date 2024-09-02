@@ -1,0 +1,95 @@
+import pygame
+pygame.init()
+screen=pygame.display.set_mode((1000,800))
+pygame.display.set_caption('space battle royale')
+border=pygame.Rect(485,0,30,800)
+background=pygame.transform.scale(pygame.image.load('space.png'),(1000,800))
+playerspeed=1
+bulletspeed=2
+shipwidth=50
+shipheight=50
+yellowhealth=20
+redhealth=20
+wintext=''
+gameover=False
+font=pygame.font.SysFont('bahnschrift',75)
+yellowbullet=[]
+redbullet=[]
+p1=pygame.transform.rotate(pygame.transform.scale(pygame.image.load('yellowspaceship.png'),(shipwidth,shipheight)),90)
+p2=pygame.transform.rotate(pygame.transform.scale(pygame.image.load('redspaceship.png'),(shipwidth,shipheight)),270)
+p1rect=pygame.Rect(30,400,shipwidth,shipheight)
+p2rect=pygame.Rect(900,400,shipwidth,shipheight)
+
+def draw():
+    screen.blit(background,(0,0))
+    pygame.draw.rect(screen,'black',border)
+    p1hptext=font.render(f'Health:{yellowhealth}',True,'white')
+    p2hptext=font.render(f'Health:{redhealth}',True,'white')
+    screen.blit(p1hptext,(20,20))
+    screen.blit(p2hptext,(660,20))
+    if gameover:
+        gameovertext=font.render('Game over!',True,'white')
+        screen.blit(background,(0,0))
+        screen.blit(gameovertext,20,20)
+    screen.blit(p1,(p1rect.x,p1rect.y))
+    screen.blit(p2,(p2rect.x,p2rect.y))
+    for bullet in yellowbullet:
+        pygame.draw.rect(screen,'yellow',bullet)
+    for bullet in redbullet:
+        pygame.draw.rect(screen,'red',bullet)
+    pygame.display.update()
+
+def p1move(keys_pressed):
+    if keys_pressed[pygame.K_w] and p1rect.y>0:
+        p1rect.y-=playerspeed
+    if keys_pressed[pygame.K_a] and p1rect.x>0:
+        p1rect.x-=playerspeed
+    if keys_pressed[pygame.K_s] and p1rect.y<750:
+        p1rect.y+=playerspeed
+    if keys_pressed[pygame.K_d] and p1rect.x<435:
+        p1rect.x+=playerspeed
+
+def p2move(keys_pressed):
+    if keys_pressed[pygame.K_UP] and p2rect.y>0:
+        p2rect.y-=playerspeed
+    if keys_pressed[pygame.K_LEFT] and p2rect.x>510:
+        p2rect.x-=playerspeed
+    if keys_pressed[pygame.K_DOWN] and p2rect.y<750:
+        p2rect.y+=playerspeed
+    if keys_pressed[pygame.K_RIGHT] and p2rect.x<950:
+        p2rect.x+=playerspeed
+    
+def bulletmove(yellowbullet,redbullet):
+    global redhealth,yellowhealth
+    for bullet in yellowbullet:
+        bullet.x+=bulletspeed
+        if p2rect.colliderect(bullet):
+            redhealth-=1
+            yellowbullet.remove(bullet)
+        elif bullet.x>=1000:
+            yellowbullet.remove(bullet)
+    for bullet in redbullet:
+        bullet.x-=bulletspeed
+        if p1rect.colliderect(bullet):
+            yellowhealth-=1
+            redbullet.remove(bullet)
+        elif bullet.x<=0:
+            redbullet.remove(bullet)
+
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            exit()
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_SPACE:
+                bullet=pygame.Rect(p1rect.x+25,p1rect.y+25,10,5)
+                yellowbullet.append(bullet)
+            if event.key==pygame.K_0:
+                bullet=pygame.Rect(p2rect.x-25,p1rect.y-25,10,5)
+                redbullet.append(bullet)
+
+    draw()
+    keys_pressed=pygame.key.get_pressed()
+    p1move(keys_pressed)
+    p2move(keys_pressed)
+    bulletmove(yellowbullet,redbullet)
