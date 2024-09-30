@@ -1,0 +1,105 @@
+import pygame,random
+from pygame.locals import *
+pygame.init()
+clock=pygame.time.Clock()
+fps=60
+screen=pygame.display.set_mode((864,768))
+pygame.display.set_caption('Flappy Bird')
+gameover=False
+bg=pygame.image.load('bgflappybird.png')
+ground=pygame.image.load('groundflappybird.png')
+groundscroll=0
+scrollspeed=4
+flying=False
+pipe_gap=150
+last_pipe=pygame.time.get_ticks()
+pipe_frequency=2500
+
+class bird(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        pygame.sprite.Sprite.__init__(self)
+        self.images=[]
+        self.index=0
+        for i in range(1,4):
+            image=pygame.image.load(f'bird{i}.png')
+            self.images.append(image)
+        self.image=self.images[self.index]
+        self.rect=self.image.get_rect()
+        self.rect.center=[x,y]
+        self.vel=0
+        self.clicked=False
+        self.counter=0
+    def update(self):
+        if flying==True:
+            self.vel+=0.5
+            if self.vel>8:
+                self.vel=8
+            if self.rect.bottom<600:
+                self.rect.y+=self.vel
+        if gameover==False:
+            if pygame.mouse.get_pressed()[0]==1 and self.clicked==False:
+                self.clicked=True
+                self.vel=-10
+            if pygame.mouse.get_pressed()[0]==0:
+                self.clicked=False
+            self.counter+=1
+            if self.counter>5:
+                self.counter=0
+                self.index+=1
+                if self.index>=len(self.images):
+                    self.index=0
+                self.image=self.images[self.index]
+            self.image=pygame.transform.rotate(self.images[self.index],self.vel*-2)
+        else:
+            self.image=pygame.transform.rotate(self.images[self.index],-90)
+
+class pipe(pygame.sprite.Sprite):
+    def __init__(self,x,y,pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=pygame.image.load('pipe.png')
+        self.rect=self.image.get_rect()
+        if pos==1:
+            self.image=pygame.transform.flip(self.image,False,True)
+            self.rect.bottomleft=[x,y-(pipe_gap//2)]
+        elif pos==-1:
+            self.rect.topleft=[x,y+(pipe_gap//2)]
+    def update(self):
+        self.rect.x-=scrollspeed
+        if self.rect.right<0:
+            self.kill()
+pipe_group=pygame.sprite.Group()
+            
+flappy=bird(100,432)
+bgroup=pygame.sprite.Group()
+bgroup.add(flappy)
+
+while True:
+    clock.tick(fps)
+    screen.blit(bg,(0,0))
+    bgroup.draw(screen)
+    pipe_group.draw(screen)
+    screen.blit(ground,(groundscroll,600))
+    bgroup.update()
+    if flying==True and gameover==False:
+        timenow=pygame.time.get_ticks()
+        if timenow-last_pipe>pipe_frequency:
+            pipeheight=random.randint(-100,100)
+            bpipe=pipe(864,300+pipeheight,-1)
+            tpipe=pipe(864,300+pipeheight,1)
+            pipe_group.add(bpipe)
+            pipe_group.add(tpipe)
+            last_pipe=timenow
+        pipe_group.update()
+        groundscroll-=scrollspeed
+        if abs(groundscroll)>35:
+            groundscroll=0
+    if flappy.rect.bottom>=600:
+        gameover=True
+        flying=False
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            exit()
+        if event.type==pygame.MOUSEBUTTONDOWN and flying==False and gameover==False:
+            flying=True
+    pygame.display.update()
