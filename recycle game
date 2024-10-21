@@ -1,0 +1,97 @@
+import pygame,time,random
+from pygame.locals import *
+pygame.init()
+screen=pygame.display.set_mode((900,600))
+textscore=0
+pygame.display.set_caption('Recycling game')
+#creating the class for the bin
+class bin(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image=pygame.image.load('bin.png')
+        self.image=pygame.transform.scale(self.image,(40,60))
+        self.rect=self.image.get_rect()
+class recyclable(pygame.sprite.Sprite):
+    def __init__(self,image):
+        super().__init__()
+        self.image=pygame.image.load(image)
+        self.image=pygame.transform.scale(self.image,(40,40))
+        self.rect=self.image.get_rect()
+class nonrecyclable(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image=pygame.image.load('plastic_bag.png')
+        self.image=pygame.transform.scale(self.image,(30,30))
+        self.rect=self.image.get_rect()
+image=['paper_bag.png','pencil.png','box.png']
+#create sprite group
+allsprites=pygame.sprite.Group()
+recyclegroup=pygame.sprite.Group()
+nonrecyclegroup=pygame.sprite.Group()
+#recyclable items
+for i in range(50):
+    r1=recyclable(random.choice(image))
+    r1.rect.x=random.randint(50,850)
+    r1.rect.y=random.randint(50,450)
+    recyclegroup.add(r1)
+    allsprites.add(r1)
+#non-recyclable items
+for i in range(20):
+    nr1=nonrecyclable()
+    nr1.rect.x=random.randint(50,850)
+    nr1.rect.y=random.randint(50,450)
+    nonrecyclegroup.add(nr1)
+    allsprites.add(nr1)
+b1=bin()
+allsprites.add(b1)
+starttime=time.time()
+score=0
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            exit()
+    timepassed=time.time()-starttime
+    if timepassed>=60:
+        if score>40:
+            screen.fill('green')
+            font=pygame.font.SysFont('bahnschrift',20)
+            text=font.render('You win',True,'black')
+        else:
+            screen.fill('red')
+            font=pygame.font.SysFont('bahnschrift',20)
+            text=font.render('You lose',True,'black')
+        screen.blit(text,(200,200))
+    else:
+        bg=pygame.image.load('bgrecyclegame.png')
+        screen.blit(bg,(0,0))
+        font=pygame.font.SysFont('bahnschrift',20)
+        timetext=font.render(str(timepassed),True,'black')
+        screen.blit(timetext,(50,50))
+        #moving the bin as per the key
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            if bin.rect.y>0:
+                bin.rect.y-=5
+        if keys[pygame.K_LEFT]:
+            if bin.rect.x>0:
+                bin.rect.x-=5
+        if keys[pygame.K_DOWN]:
+            if bin.rect.y<=500:
+                bin.rect.y+=5
+        if keys[pygame.K_RIGHT]:
+            if bin.rect.x<=900:
+                bin.rect.x+=5
+        #checking for colission
+        hit1=pygame.sprite.spritecollide(b1,recyclegroup,True)
+        hit2=pygame.sprite.spritecollide(b1,nonrecyclegroup,True)
+        for i in hit1:
+            score+=1
+            font=pygame.font.SysFont('bahnschrift',20)
+            textscore=font.render('score:'+str(score),True,'black')
+        for i in hit2:
+            score-=3
+            font=pygame.font.SysFont('bahnschrift',20)
+            textscore=font.render('score:'+str(score),True,'black')
+        screen.blit(textscore,(800,50))
+        allsprites.draw(screen)
+    pygame.display.update()
